@@ -1,0 +1,15 @@
+# API keys & secrets
+.env
+*.key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
