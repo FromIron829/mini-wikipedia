@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+langchain-openai
+langchain-community
+faiss-cpu
+sentence-transformers
+datasets
+python-dotenv
+numpy

@@ -2,6 +2,10 @@
 
 A retrieval-augmented generation (RAG) system built over the [rag-mini-wikipedia](https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia) dataset from HuggingFace (3,200 passages, 918 Q&A pairs). Core components are **self-implemented from scratch** to demonstrate deep understanding of RAG internals.
 
+
+## Demo
+![Demo](demo.gif)
+
 ## Architecture
 
 ```
@@ -44,15 +48,19 @@ Pure vector search outperforms hybrid on this dataset — the passages are well-
 ### Installation
 
 ```bash
-pip install langchain-openai langchain-community faiss-cpu datasets sentence-transformers
+pip install -r requirements.txt
 ```
 
 ### Run
 
 ```bash
-# Set your API key (the notebook will prompt via getpass if not set)
-export OPENAI_API_KEY="your-key-here"
+# Create .env file with your API key
+echo "OPENAI_API_KEY=your-key-here" > .env
 
+# Run the web app
+python -m uvicorn app:app --reload
+
+# Or run the notebook for experimentation
 jupyter notebook mini-wikipedia.ipynb
 ```
 

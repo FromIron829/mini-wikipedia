@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RAG Mini Wikipedia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input[type="text"]{
+            width: 63%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #answer {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        #sources p {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-left: 3px solid #007bff;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>RAG Mini Wikipedia</h1>
+    <input type="text" id="question" placeholder="Ask a question..." />
+    <button onclick="askQuestion()">Ask</button>
+    <label><input type="checkbox" id="hybrid" /> Use Hybrid Search</label>
+    
+    <p id="answer"></p>
+    <div id="sources"></div>
+
+    <script>
+        async function askQuestion() {
+            const question = document.getElementById("question").value;
+            const hybrid = document.getElementById("hybrid").checked;
+            if (!question) {
+                document.getElementById("answer").innerText = "Please enter a question.";
+                document.getElementById("sources").innerHTML = "";
+                return;
+            }
+
+            document.getElementById("answer").innerText = "Loading...";
+            document.getElementById("sources").innerHTML = "";
+            try{
+    
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({question: question, use_hybrid: hybrid})
+                });
+
+                const data = await response.json();
+
+                document.getElementById("answer").innerText = data.answer;
+
+                let sourcesHTML = "<h3>Sources</h3>";
+                for (let i = 0; i < data.sources.length; i++) {
+                    sourcesHTML += "<p><strong>Passage " + (i + 1) + ":</strong> " + data.sources[i] + "</p>";
+                }
+                document.getElementById("sources").innerHTML = sourcesHTML;
+            } catch(error) {
+                document.getElementById("answer").innerText = "Someting went wrong. Please try again later.";
+            }
+        }
+    </script>
+</body>
+</html>
