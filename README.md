@@ -6,13 +6,48 @@ A retrieval-augmented generation (RAG) system built over the [rag-mini-wikipedia
 ## Demo
 ![Demo](demo.gif)
 
-## Architecture
+## API Usage
+
+### Endpoint
+POST /ask
+
+### Request
+```json
+{
+    "question": "Who is Nikola Tesla?"
+}
+```
+
+### Response
+```json
+{
+    "answer": "Tesla is Nikola Tesla, an inventor and engineer (physicist, mechanical and electrical engineer) known for major contributions to electricity and magnetism in the late 19th and early 20th centuries.",
+    "sources": [
+        "Nikola Tesla (Serbian Cyrillic: ÐÐ¸ÐºÐ¾Ð»Ð° Ð¢ÐµÑÐ»Ð°) (July 10 1856 7 January 1943) was an inventor, physicist...",
+        "An electric car company, Tesla Motors, named their company in tribute to Nikola Tesla...",
+        "Tesla was widely known for his great showmanship, presenting his innovations and demonstrations to the public as an artform..."
+    ]
+}
+```
+
+## System Architecture
 
 ```
-Query → Embed (OpenAI) → FAISS Vector Search → Cross-Encoder Rerank → Prompt Builder → LLM → Answer
-                              ↑ (optional)
-                          BM25 + RRF Fusion
+User → FastAPI Services → Query Processing → Embedding (OpenAI) → Retrieval (FAISS / BM25) → Reranking (Cross-Encoder) → LLM Generation → Response                        
 ```
+
+## System Features
+
+- Modular pipeline separating retrieval, reranking, and generation stages
+- REST API interface for real-time querying
+- Average end-to-end latency: ~1.65s per request
+- Supports hybrid retrieval (BM25 + vector) via RRF
+
+## Design Decisions
+
+- Chose FAISS over external vector DB for low-latency local retrieval
+- Used cross-encoder reranking to improve precision at top-k
+- Observed that semantic retrieval outperforms hybrid on clean Wikipedia data
 
 ## What's Self-Implemented
 
